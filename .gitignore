@@ -1,0 +1,11 @@
+*.tex
+*.dvi
+*.log
+*.idx
+*.ilg
+*.aux
+*.xbb
+*.md
+texmf-local/
+!sample.tex
+!desc.tex
