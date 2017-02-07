@@ -1,0 +1,512 @@
+\NeedsTeXFormat{pLaTeX2e}
+\ProvidesPackage{ccMath}[2016/12/02 beta1 keibundou.corp. n.miyakawa for TOKYO TOSHO]
+
+\definecolor{mygrey}{gray}{0.75}
+\newcommand{\tabtopsp}[1]{\vbox{\vbox to#1{}\vbox to1zw{}}}
+
+
+\def\KB@setFloat{%
+	\def\figure{\@ifnextchar[{\figure@@@}{\figure@@@[]}}%
+	\def\figure@@@[##1]{\vspace{\baselineskip}\trivlist\item[]\def\@captype{figure}}%%
+	\def\endfigure{\endtrivlist\vspace{\baselineskip}}%
+	\def\table{\@ifnextchar[{\table@@@}{\table@@@[]}}%
+	\def\table@@@[##1]{\vspace{\baselineskip}\trivlist\item[]\def\@captype{table}}%%
+	\def\endtable{\endtrivlist}}%
+
+%\usepackage{emathBK}
+\usepackage{framed}
+%\resettagform
+
+%% 2012/12/12 
+%% コラム環境追加．数学補足にfigure，tableを入れられるようにした．
+%% 2012/12/11 アミ環境追加
+%% 2012/12/11 kbdbook4.3mod.cls側の[a4]オプションの有無で
+%%            個別のフォントサイズが従来<-->1.2倍程度(a4指定時)に変わるように設定．
+%%            上記設定の関連コード\if@sizeA\else\fi．miya
+%% 2012/09/19\resettagform追記 bugfix
+%% 2012/09/18 「益川コラム」「章末コラム」を改変
+%	改頁を取りやめ，コラム内にfigureとtable環境を置けるようにした．
+%	ただし，これにはフロート機能はなく，書いた位置にそのまま挿入される．
+%% 「数学補足」を改変
+%	影付きのボックスに変更．変更まえの「数学補足」は[Fst数学補足]として残している．
+
+\def\振角{振れ角}
+
+\setcounter{tocdepth}{1}
+
+%%\sectionの\Sを
+%%\seccntfixHeadfalse% 柱に反映しない
+\seccntfixTocfalse% 目次に反映しない．
+
+\newdimen\sfboxsep\sfboxsep\fboxsep
+
+%% ここはシリーズ固定
+\def\editers{%
+	\editerfont 益川敏英監修／\\[5pt]\editerfont 植松恒夫，青山秀明編集%
+}
+
+
+
+
+
+% 各パーツのフォント設定
+%%% デフォルトはfalse
+\if@sizeA
+\DeclareRobustCommand*\KBchapterfont{%
+	\reset@font\fontsize{16.8pt}{22.8pt}\selectfont}
+\DeclareRobustCommand*\KBchapternumfont{%
+	\KBchapterfont}
+\DeclareRobustCommand*\KBschapterfont{%
+	\reset@font\fontsize{13.2pt}{13.2pt}\bfseries}
+\DeclareRobustCommand*\KBsectionfont{%
+	\reset@font\fontsize{13.2pt}{19.2pt}\bfseries}
+\DeclareRobustCommand*\KBsectionnumfont{%
+	\reset@font\fontsize{13.2pt}{19.2pt}\bfseries}
+\DeclareRobustCommand*\KBsubsectionfont{%
+%	\reset@font\fontsize{8pt}{14pt}\bfseries}
+	\reset@font\normalsize\bfseries}
+\DeclareRobustCommand*\KBsubsectionnumfont{%
+	\reset@font\normalsize\bfseries}
+\DeclareRobustCommand*\KBcaptionfont{%
+	\reset@font\fontsize{9.6pt}{15.6pt}\bfseries}
+\DeclareRobustCommand*\KBpagenumfont{%
+	\reset@font\fontsize{9.6pt}{\z@}\selectfont}
+\DeclareRobustCommand*\KBheaderfont{%
+	\reset@font\fontsize{9.6pt}{\z@}\selectfont}
+\DeclareRobustCommand*\KBmarginparfont{%
+	\reset@font\fontsize{7.2pt}{13.2pt}\selectfont}
+\DeclareRobustCommand*\abstfont{%
+	\fontsize{8.4pt}{15.6pt}\bfseries}%% abstlactのフォント
+\else
+\DeclareRobustCommand*\KBchapterfont{%
+	\reset@font\fontsize{14pt}{19pt}\selectfont}
+\DeclareRobustCommand*\KBchapternumfont{%
+	\KBchapterfont}
+\DeclareRobustCommand*\KBschapterfont{%
+	\reset@font\fontsize{11pt}{11pt}\bfseries}
+\DeclareRobustCommand*\KBsectionfont{%
+	\reset@font\fontsize{11pt}{16pt}\bfseries}
+\DeclareRobustCommand*\KBsectionnumfont{%
+	\reset@font\fontsize{11pt}{16pt}\bfseries}
+\DeclareRobustCommand*\KBsubsectionfont{%
+%	\reset@font\fontsize{8pt}{14pt}\bfseries}
+	\reset@font\normalsize\bfseries}
+\DeclareRobustCommand*\KBsubsectionnumfont{%
+	\reset@font\normalsize\bfseries}
+\DeclareRobustCommand*\KBcaptionfont{%
+	\reset@font\fontsize{8pt}{13pt}\bfseries}
+\DeclareRobustCommand*\KBpagenumfont{%
+	\reset@font\fontsize{8pt}{\z@}\selectfont}
+\DeclareRobustCommand*\KBheaderfont{%
+	\reset@font\fontsize{8pt}{\z@}\selectfont}
+\DeclareRobustCommand*\KBmarginparfont{%
+	\reset@font\fontsize{6pt}{11pt}\selectfont}
+\DeclareRobustCommand*\abstfont{%
+	\fontsize{7pt}{13pt}\bfseries}%% abstlactのフォント
+ \DeclareRobustCommand*\KBtocchapterfont{\reset@font}
+ \DeclareRobustCommand*\KBtocnumchapterfont{\reset@font}
+\fi
+%-- 索引処理
+%% ※\index引数中のマクロ展開抑制のためindex.styを読ませることにした．
+\RequirePackage{index}
+\makeindex
+% \emword{英字語句}            引数をそのまま(本文側印字 | 索引転写)
+% \emword[よみ]{和文語句}      (本文側印字 | 索引の読み付加して転写)
+% \emword*{語句}               (本文側印字 | 索引転写なし) 別途\index{親!子}
+%                              など特殊指定のため（このような指定は上の方法
+%                              では対処できないので…）
+\def\emword{\@ifnextchar[{\@@@emword}{\@ifstar{\@emword}{\@@emword}}}
+\def\@@@emword[#1]#2{\index{#1@#2}\textbf{#2}}
+\def\@@emword#1{\index{#1}\textbf{#1}}
+\def\@emword#1{\textbf{#1}}
+%--
+\renewcommand{\chapter}{%
+  \if@openright\cleardoublepage\else\clearpage\fi
+  \thispagestyle{cust@empty@headings}%
+  \global\@topnum\z@
+%  \@afterindentfalse
+\global\advance\@chapterid\@ne% for multicite.sty
+\xdef\@ref@prefix{\the\@chapterid::}
+  \@afterindenttrue
+  \secdef\@chapter\@schapter}
+
+% 再定義の場合は，\@make@appendix@chapterheadに\letしなおすこと．
+%---------
+\def\@makechapterhead#1{{\parindent\z@%
+\toplinebox{5}{\centering\vskip2\normalbaselineskip
+   \KBchapternumfont
+   \ifnum \c@secnumdepth >\m@ne
+     \setlength\@tempdima{\linewidth}%
+    \if@mainmatter
+      \@chapapp\thechapter\@chappos\hskip1zw
+     \else
+      \hbox{}
+    \fi
+     \KBchapterfont\@inhibitglue#1\par\vfill\fi}}%
+}
+\let\@make@appendix@chapterhead\@makechapterhead
+
+
+\def\@makeschapterhead#1{{\parindent\z@
+     \toplinebox{5}{\vskip2\normalbaselineskip
+     \centering\KBschapterfont\@inhibitglue#1\par\vfill}%
+   }}
+\let\@make@toc@chapterhead\@makeschapterhead
+\let\@make@bib@chapterhead\@makeschapterhead
+\let\@make@index@chapterhead\@makeschapterhead
+
+\if@sizeA
+\def\titlefont{\fontsize{26.4pt}{\z@}\fmb}
+\def\editerfont{\normalfont\fontsize{16.8pt}{24pt}\selectfont}
+\def\authorfont{\normalfont\fontsize{16.8pt}{24pt}\selectfont}
+\def\publisherfont{\normalfont\fontsize{13.2pt}{\z@}\selectfont}
+\else
+\def\titlefontI{\fontsize{20pt}{\z@}\fmb}
+\def\titlefontII{\fontsize{22pt}{\z@}\fmb}
+\def\editerfont{\normalfont\fontsize{14pt}{20pt}\selectfont}
+\def\authorfont{\normalfont\fontsize{10pt}{15pt}\bfseries}
+\def\authorfontM{\normalfont\fontsize{10pt}{15pt}\selectfont}
+\def\publisherfont{\normalfont\fontsize{11pt}{\z@}\selectfont}
+\fi
+\def\title{\@ifnextchar[{\title@}{\title@[\hbox{}]}}
+\def\title@[#1]#2{\gdef\@title{\begin{tabular}{c}
+%%\editers\\[\baselineskip]%
+\titlefontI 基幹講座\hskip1zw数学\\[15pt]
+\titlefontII#2\\[18pt]
+\authorfont 基幹講座 数学 編集委員会 編\\
+\end{tabular}}}
+\def\publisher#1{\gdef\@publisher{#1}}
+\def\p@thanks#1{\footnotemark
+  \protected@xdef\@thanks{\@thanks
+    \protect{\noindent$\m@th^\thefootnote$~#1\protect\par}}}
+\def\and{\\}%
+  \renewcommand{\maketitle}{\begin{titlepage}%
+  \let\footnotesize\small
+  \let\footnoterule\relax
+  \let\footnote\thanks
+  \null\vfil
+%  \vskip 120\p@
+  \vskip 50\p@
+  \begin{center}%
+    {\@title \par}%
+    \vskip\baselineskip%
+    {\Large {\@author} 著}
+\vfill
+    {%
+     \lineskip .75em\authorfontM%
+      \begin{tabular}[t]{@{}c@{}}%
+	\textbf{代表編集委員}\\[-2mm]
+    \rule{4.5zw}{1mm}\\[1mm]
+	砂田 利一\\新井 敏康\\木村 俊一\\西浦 廉政
+      \end{tabular}\par}%
+\par%       % Set date in \large size.
+\vskip\baselineskip
+{\publisherfont\@publisher}
+  \end{center}\par
+  \@thanks\vfil\null
+  \end{titlepage}%
+  \setcounter{footnote}{0}%
+  \global\let\thanks\relax
+  \global\let\maketitle\relax
+  \global\let\p@thanks\relax
+  \global\let\@thanks\@empty
+  \global\let\@author\@empty
+  \global\let\@date\@empty
+  \global\let\@title\@empty
+  \global\let\@publisher\@empty
+  \global\let\title\relax
+  \global\let\author\relax
+  \global\let\date\relax
+  \global\let\and\relax
+  \global\let\publisher\relax
+\hbox{}\vfill\thispagestyle{empty}
+\CopyingRightsText}%
+
+
+  \def\ps@cust@headings{\let\ps@jpl@in\ps@headnombre
+    \def\@oddfoot{\KBheaderfont\hfil\thepage}%
+    \def\@evenfoot{\KBpagenumfont\thepage\hfil}%
+    \def\@evenhead{\hfil\KBheaderfont\leftmark\hfil}%
+    \def\@oddhead{\hfil\KBheaderfont{\rightmark}\hfil}%
+    \let\@mkboth\markboth
+  \def\chaptermark##1{\markboth{%
+     \ifnum \c@secnumdepth >\m@ne
+         \if@mainmatter
+         \@chapapp\thechapter\@chappos\hskip1zw
+         \fi
+     \fi
+     \protect\@inhibitglue##1}{}}%
+  \def\sectionmark##1{\markright{%
+% 柱に\@seccnt@prefix@sectionを入れたい★
+     \ifnum \c@secnumdepth >\z@
+           \ifseccntfixHead\@seccnt@prefix@section\fi%
+              \thesection%
+           \ifseccntfixHead\@seccnt@postfix@section\fi%
+\hskip1zw%
+\fi
+     \protect\@inhibitglue##1}}%
+  }
+
+  \def\ps@cust@empty@headings{\let\ps@jpl@in\ps@headnombre
+    \def\@oddfoot{\KBheaderfont\hfil\thepage\hfil}%
+    \def\@evenfoot{\KBpagenumfont\hfil\thepage\hfil}%
+    \let\@evenhead\relax%
+    \let\@oddhead\relax%
+    \let\@mkboth\markboth
+  \def\chaptermark##1{\markboth{%
+     \ifnum \c@secnumdepth >\m@ne
+         \if@mainmatter
+         \@chapapp\thechapter\@chappos\hskip1zw
+         \fi
+     \fi
+     \protect\@inhibitglue##1}{}}%
+  \def\sectionmark##1{\markright{%
+% 柱に\@seccnt@prefix@sectionを入れたい★
+     \ifnum \c@secnumdepth >\z@
+           \ifseccntfixHead\@seccnt@prefix@section\fi%
+              \thesection%
+           \ifseccntfixHead\@seccnt@postfix@section\fi%
+\hskip1zw%
+\fi
+     \protect\@inhibitglue##1}}%
+  }
+
+\def\装幀{\hbox{\textbf{◆装幀}\hskip1zw\@装幀者}}
+\def\@装幀者{}
+\def\装幀者#1{\def\@装幀者{#1}}
+
+\renewcommand{\tableofcontents}{%
+\@table@of@contents@@true
+  \if@twocolumn\@restonecoltrue\onecolumn
+  \else\@restonecolfalse\fi
+  \chapter*{\contentsname}%
+    \@mkboth{\contentsname}{\contentsname}%%\vspace{\l@chapter@@skip}%
+  \@starttoc{toc}\hbox{}\vfill\noindent
+   \装幀
+  \vspace{-2.4mm}%
+  \if@restonecol\twocolumn\fi
+}
+
+%% 
+\renewcommand{\@dotsep}{1.75}
+\def\@dottedtocline#1#2#3#4#5{\ifnum #1>\c@tocdepth \else
+  \vskip\toclineskip \@plus.2\p@
+  {\leftskip #2\relax \rightskip \@tocrmarg \parfillskip -\rightskip
+    \parindent #2\relax\@afterindenttrue
+   \interlinepenalty\@M
+   \leavevmode
+   \@lnumwidth #3\relax
+   \advance\leftskip \@lnumwidth \hbox{}\hskip -\leftskip
+    {\@TocSectionSlectFont#4}
+%    \nobreak\leaders\hbox{$\m@th \mkern \@dotsep mu\rule{.2zw}{.15mm}\mkern \@dotsep mu$}
+\hfill \nobreak\hbox to\@pnumwidth{%
+         \hss\@TocSectionNumSlectFont#5}\par}\fi}
+
+\renewcommand*{\l@section}{\IfSecFontChange%
+\S@ectiontrue\@dottedtocline{1}{1em}{2.7em}}
+
+
+\renewcommand*{\l@chapter}[2]{%
+  \ifnum \c@tocdepth >\m@ne
+    \addpenalty{-\@highpenalty}%
+    \addvspace{\l@chapter@@skip}%
+    \begingroup
+      \parindent\z@ \rightskip\@pnumwidth \parfillskip-\rightskip
+      \leavevmode\KBtocchapterfont
+      \setlength\@lnumwidth{4zw}%
+      \advance\leftskip\@lnumwidth \hskip-\leftskip
+      #1\nobreak
+\leaders\hbox{$\m@th \mkern \@dotsep mu\rule{.2zw}{.15mm}\mkern \@dotsep mu$}
+\hfil\nobreak\KBtocnumchapterfont\hbox to\@pnumwidth{\hss#2}\par
+      \penalty\@M%%\@highpenalty
+    \endgroup
+  \fi}
+
+\pagestyle{cust@headings}
+
+
+\def\CopyingRightsText{%
+\dimen0\textwidth\advance\dimen0-1zw
+\begin{center}
+\parbox{\dimen0}{\fontsize{12Q}{16H}\fontfamily{cmr}\selectfont
+\noindent \fboxsep\sfboxsep\framebox[0.5cm]{\sf\small R}〈日本複製権センター委託出版物〉\\
+本書を無断で複写複製（コピー）することは，著作権法上の例外を除き，禁じられています．本書をコピーされる場合は，事前に日本複製権センター（電話03-3401-2382）の許諾を受けてください．\par}
+\vspace*{-3mm}
+\end{center}}
+
+\newcommand{\shadesection}{%
+   \@startsection{paragraph}{4}{\z@}%
+   {\z@}%
+   {-1zw}%
+   {\fontsize{8pt}{13pt}\bfseries\color[gray]{.3}}%
+}
+
+\PreSecCntName{section}{\S}
+
+\newenvironment{abst}{%
+\begin{flushleft}
+	\abstfont
+	\begin{minipage}{40zw}\parindent1zw
+}
+{\end{minipage}\end{flushleft}}
+
+\newdimen\abstwidth
+\renewenvironment{abst}{%
+\setbox0=\hbox{\abstfont あ}
+\dimen0\wd0\multiply\dimen0 by40\relax
+\abstwidth\textwidth
+\advance\abstwidth by-\dimen0
+\list{}{\listparindent1zw\topsep\z@\leftmargin\abstwidth\rightmargin\z@\labelwidth\z@\labelsep\z@\abstfont\itemindent1zw}\item[]
+%%\begin{flushright}
+}
+{%%\end{flushright}
+\endlist}
+
+
+\newmdenv[%
+	skipabove=\baselineskip,
+	skipbelow =0pt,
+	innertopmargin=2.5pt,
+	innerbottommargin=2.5pt,
+		outerlinewidth=0.1mm,%% 外側罫線の太さ
+		innerlinewidth=0pt,%% 内側罫線の太さ
+%		innerlinecolor=red,%% 内側罫線の色
+%		outerlinecolor=red,%% 外側罫線の色
+		outerlinecolor=black,
+		roundcorner=7pt,%% コーナーのR
+%		backgroundcolor=gray!50%% 
+]{kScreen}
+
+\newcounter{演習問題}[chapter]
+\def\the演習問題{\thechapter.\arabic{演習問題}}
+\newenvironment{演習問題}%
+{\refstepcounter{演習問題}%
+\begin{kScreen}
+\makebox[\linewidth][l]{\textbf{演習問題\the演習問題}}\end{kScreen}
+\@beginparpenalty\@M%
+\list{}{\leftmargin1zw\topsep0pt\item[]}
+}{\endlist\vspace{0.5\baselineskip}}
+
+
+
+
+%% 例
+\newenvironment{exa}[1][]{%
+\IFempty{#1}{\def\list@OP@tion{}}{\def\list@OP@tion{\textbf{（#1）\<}}}%
+	\topsep\baselineskip
+	\trivlist\item[\hskip\labelsep{%
+	%%\fboxsep0.2zw\colorbox[gray]{0.5}{\makebox[1.5zw][c]{\textbf{例}}}
+	\raisebox{-.2zw}{\includegraphics[scale=1.1]{./parts/例.pdf}}%
+	}\list@OP@tion]\leavevmode
+}{\endtrivlist}
+
+
+\let\例\exa
+\let\end例\endexa
+
+
+
+%% 注意
+\newenvironment{注意}{\par\addvspace{\baselineskip}%
+  \def\FrameCommand{\textcolor[gray]{.5}{\vrule width9mm}\hspace{1zw}}%
+  \MakeFramed {\advance\hsize-\width \FrameRestore}%
+{\unitlength=1mm\begin{picture}(0,0)%
+\put(-13.7,-5){\includegraphics[width=5mm]{./parts/！.pdf}}%
+%%\put(-6.7,-2.7){\textcolor[gray]{.9}{\rule[1.7mm]{1.05\hsize}{1mm}}}
+\end{picture}}\vskip-1mm\noindent\small\ignorespaces%\def\picnumL{-18.307}
+}%
+ {\endMakeFramed\vspace{\baselineskip}}
+
+\newenvironment{説明}{%
+\topsep.5\baselineskip
+\trivlist\item[]\small\mbox{\textbf{説明}}\hskip1zw}
+{\endtrivlist}
+
+
+\def\Bar{\overline}
+\def\bar{\overline}
+
+\newcounter{alltheoremcnt}[chapter]
+\def\thealltheoremcnt{\@arabic\c@chapter-\@arabic\c@alltheoremcnt}
+
+\def\SetThm#1#2{%
+\renewenvironment{#1}[1][\relax]%
+{\def\KBop@name{{\bfseries ##1}}\refstepcounter{#2}\begin{Screen}
+\textbf{#1\csname the#2\endcsname}\hskip1zw\KBop@name\par}
+{
+\end{Screen}
+}}
+
+% カウンタの系統を流用するため，一度\newtheoremで定義
+\newtheorem{定理}{定理}[chapter]
+\newtheorem{系}[定理]{系}
+\newtheorem{命題}{系}[chapter]
+\newtheorem{補題}{補題}[chapter]
+\newtheorem{定義}{定義}[chapter]
+\newtheorem{問}{問}[chapter]
+
+\SetThm{命題}{命題}
+\SetThm{系}{定理}
+\SetThm{定理}{定理}
+\SetThm{補題}{補題}
+\SetThm{定義}{定義}
+\SetThm{問}{問}
+
+
+
+\newcounter{Exsamplecolcnt}
+\def\theExsamplecolcnt{\thechapter --\@arabic\c@Exsamplecolcnt}
+
+\newcommand{\QEDBox}{\mbox{\textcolor[gray]{.4}{■}}}
+\newenvironment{証明}{\topsep\baselineskip
+	\trivlist\item[\hskip\labelsep \textbf{証明}]
+	}{\hspace*{\fill}\QEDBox
+		\endtrivlist}
+\newenvironment{証明*}{\topsep\baselineskip
+	\trivlist\item[\hskip\labelsep \textbf{証明}]
+	}{\endtrivlist}
+
+
+
+\def\Frame@head@box#1#2#3#4#5{
+\if@sizeA
+\fontsize{9.6pt}{18pt}%
+\else
+\fontsize{8pt}{15pt}%
+\fi
+\bfseries\fboxrule.3mm\fboxsep.5zw\fcolorbox[gray]{#5}{#4}{\parbox[t]{#3}{\centering
+\jidori{\linewidth}{#1}\par#2}}%
+}
+\newenvironment{prob}[1][\relax]{%
+\renewcommand{\labelenumi}{(\theenumi)}%
+\let\enumerate\thoremenumerate
+\let\endenumerate\endthoremenumerate
+\refstepcounter{Exsamplecolcnt}%
+\def\foo@{\relax}\def\foo{#1}\ifx\foo\foo@
+\def\@@head@@@@{}\else\def\@@head@@@@{\leavevmode\textbf{\<（#1）}\par}\fi%
+\list{\Frame@head@box{\textcolor{white}{例題}}{\textcolor{white}{\hbox{\theExsamplecolcnt}}}{3zw}{.4}{.4}}{\topsep\baselineskip
+\leftmargin6zw\listparindent1zw
+\labelwidth\leftmargin\labelsep0pt\normalsize%%\fontsize{8pt}{14pt}\selectfont
+\def\makelabel##1{\raisebox{0pt}[0pt][0pt]{##1}}}\item\@@head@@@@}{%
+\endlist}
+
+
+\DeclareRobustCommand*\abstfont{%
+	\fontsize{8pt}{13pt}\bfseries}%% abstlactのフォント
+
+\renewenvironment{abst}{%
+\list{}{\abstfont
+	\setlength{\listparindent}{1zw}
+	\setlength{\topsep}{0pt}
+	\setlength{\leftmargin}{1\Cwd}
+	\setlength{\rightmargin}{1\Cwd}
+	\setlength{\labelwidth}{0pt}
+	\setlength{\labelsep}{0pt}
+	\setlength{\itemindent}{1zw}}\item[]}%
+{\endlist}
+
+
+%%
+\endinput
+
+
