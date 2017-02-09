@@ -1,5 +1,6 @@
 \NeedsTeXFormat{pLaTeX2e}
 \ProvidesPackage{ccMath}[2016/12/02 beta1 keibundou.corp. n.miyakawa for TOKYO TOSHO]
+\RequirePackage{xparse}
 
 \definecolor{mygrey}{gray}{0.75}
 \newcommand{\tabtopsp}[1]{\vbox{\vbox to#1{}\vbox to1zw{}}}
@@ -134,7 +135,7 @@
 %---------
 \def\@makechapterhead#1{{\parindent\z@%
 \toplinebox{5}{\centering\vskip2\normalbaselineskip
-   \KBchapternumfont
+  \KBchapternumfont
    \ifnum \c@secnumdepth >\m@ne
      \setlength\@tempdima{\linewidth}%
     \if@mainmatter
@@ -439,20 +440,34 @@
 
 % カウンタの系統を流用するため，一度\newtheoremで定義
 \newtheorem{定理}{定理}[chapter]
-\newtheorem{系}[定理]{系}
+%%\newtheorem{系}[定理]{系}
 \newtheorem{命題}{系}[chapter]
 \newtheorem{補題}{補題}[chapter]
 \newtheorem{定義}{定義}[chapter]
 \newtheorem{問}{問}[chapter]
 
 \SetThm{命題}{命題}
-\SetThm{系}{定理}
+%\SetThm{系}{定理}
 \SetThm{定理}{定理}
 \SetThm{補題}{補題}
 \SetThm{定義}{定義}
 \SetThm{問}{問}
 
+\renewcommand{\the定理}{\thechapter--\arabic{定理}}
+\renewcommand{\the命題}{\thechapter--\arabic{命題}}
+\renewcommand{\the補題}{\thechapter--\arabic{補題}}
+\renewcommand{\the定義}{\thechapter--\arabic{定義}}
+\renewcommand{\the問}{\thechchapterp\arabic{問}}
 
+\newenvironment{系}[1][\relax]%
+{\def\KBop@name{{\bfseries #1}}\begin{Screen}
+\textbf{系\the定理}\hskip1zw\KBop@name\par}
+{\end{Screen}}
+
+\newenvironment{系*}[1][a]%
+{\begin{Screen}
+\textbf{系\the定理#1}\hskip1zw\par}
+{\end{Screen}}
 
 \newcounter{Exsamplecolcnt}
 \def\theExsamplecolcnt{\thechapter --\@arabic\c@Exsamplecolcnt}
