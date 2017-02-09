@@ -6,6 +6,8 @@
 *.aux
 *.xbb
 *.md
+*.gz
+*.bak
 texmf-local/
 !sample.tex
 !desc.tex
