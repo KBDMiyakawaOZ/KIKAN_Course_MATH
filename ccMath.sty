@@ -464,9 +464,12 @@
 \textbf{系\the定理}\hskip1zw\KBop@name\par}
 {\end{Screen}}
 
-\newenvironment{系*}[1][a]%
-{\begin{Screen}
-\textbf{系\the定理#1}\hskip1zw\par}
+
+\newcounter{系}[定理]
+\def\the系{\the定理\@alph\c@系}
+\newenvironment{系*}[1][\relax]
+{\def\KBop@name{{\bfseries #1}}\begin{Screen}\refstepcounter{系}%
+\textbf{系\the系}\hskip1zw\KBop@name\par}
 {\end{Screen}}
 
 \newcounter{Exsamplecolcnt}
