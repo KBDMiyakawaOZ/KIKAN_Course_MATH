@@ -1,5 +1,5 @@
 \NeedsTeXFormat{pLaTeX2e}
-\ProvidesPackage{ccMath}[2016/12/02 beta1 keibundou.corp. n.miyakawa for TOKYO TOSHO]
+\ProvidesPackage{ccMath}[2016/12/16 beta2 keibundou.corp. n.miyakawa for TOKYO TOSHO]%% counterの系統の整備（系は少しトリッキーなので注意）2017/02/16
 \RequirePackage{xparse}
 
 \definecolor{mygrey}{gray}{0.75}
@@ -431,45 +431,73 @@
 \def\thealltheoremcnt{\@arabic\c@chapter-\@arabic\c@alltheoremcnt}
 
 \def\SetThm#1#2{%
-\renewenvironment{#1}[1][\relax]%
+\newenvironment{#1}[1][\relax]%
 {\def\KBop@name{{\bfseries ##1}}\refstepcounter{#2}\begin{Screen}
 \textbf{#1\csname the#2\endcsname}\hskip1zw\KBop@name\par}
 {
 \end{Screen}
 }}
 
+
+
 % カウンタの系統を流用するため，一度\newtheoremで定義
-\newtheorem{定理}{定理}[chapter]
-%%\newtheorem{系}[定理]{系}
-\newtheorem{命題}{系}[chapter]
-\newtheorem{補題}{補題}[chapter]
-\newtheorem{定義}{定義}[chapter]
-\newtheorem{問}{問}[chapter]
+%\newtheorem{定理}{定理}[chapter]
+%%%\newtheorem{系}[定理]{系}
+%\newtheorem{命題}[定理]{命題}%[chapter]
+%\newtheorem{補題}[定理]{補題}%[chapter]
+%\newtheorem{定義}{定義}[chapter]
+%\newtheorem{問}{問}[chapter]
 
-\SetThm{命題}{命題}
+\newcounter{theoremCNT}[chapter]
+\renewcommand{\thetheoremCNT}{\thechapter--\arabic{theoremCNT}}
+
+\newcounter{theoremCNTa}[chapter]
+\renewcommand{\thetheoremCNTa}{\thechapter--\arabic{theoremCNTa}}
+
+\newcounter{definitionCNT}[chapter]
+\renewcommand{\thedefinitionCNT}{\thechapter--\arabic{definitionCNT}}
+
+\newcounter{problemCNT}[chapter]
+\renewcommand{\theproblemCNT}{\thechapter--\arabic{problemCNT}}
+
+\setcounter{theoremCNT}{1}
+\setcounter{definitionCNT}{1}
+\setcounter{problemCNT}{1}
+
+\SetThm{命題}{theoremCNT}
 %\SetThm{系}{定理}
-\SetThm{定理}{定理}
-\SetThm{補題}{補題}
-\SetThm{定義}{定義}
-\SetThm{問}{問}
+%\SetThm*{定理}{theoremCNT}
+\SetThm{補題}{theoremCNT}
+\SetThm{定義}{definitionCNT}
+\SetThm{問}{problemCNT}
 
-\renewcommand{\the定理}{\thechapter--\arabic{定理}}
-\renewcommand{\the命題}{\thechapter--\arabic{命題}}
-\renewcommand{\the補題}{\thechapter--\arabic{補題}}
-\renewcommand{\the定義}{\thechapter--\arabic{定義}}
-\renewcommand{\the問}{\thechapter\arabic{問}}
+%\renewcommand{\the定理}{\thechapter--\arabic{定理}}
+%\renewcommand{\the命題}{\thechapter--\arabic{定理}}
+%\renewcommand{\the補題}{\thechapter--\arabic{定理}}
+%\renewcommand{\the定義}{\thechapter--\arabic{定義}}
+%\renewcommand{\the問}{\thechapter\arabic{問}}
+
+
+\newenvironment{定理}[1][\relax]%
+{\def\KBop@name{{\bfseries #1}}%
+\refstepcounter{theoremCNT}\setcounter{theoremCNTa}{\value{theoremCNT}}\setcounter{corollaryCNT}{0}\begin{Screen}
+\textbf{定理\thetheoremCNT}\hskip1zw\KBop@name\par}
+{
+\end{Screen}
+}
 
 \newenvironment{系}[1][\relax]%
 {\def\KBop@name{{\bfseries #1}}\begin{Screen}
-\textbf{系\the定理}\hskip1zw\KBop@name\par}
+\textbf{系\thetheoremCNT}\hskip1zw\KBop@name\par}
 {\end{Screen}}
 
 
-\newcounter{系}[定理]
-\def\the系{\the定理\@alph\c@系}
+\newcounter{corollaryCNT}[theoremCNTa]
+\def\thecorollaryCNT{\thetheoremCNTa\@alph\c@corollaryCNT}
+
 \newenvironment{系*}[1][\relax]
-{\def\KBop@name{{\bfseries #1}}\begin{Screen}\refstepcounter{系}%
-\textbf{系\the系}\hskip1zw\KBop@name\par}
+{\def\KBop@name{{\bfseries #1}}\begin{Screen}\refstepcounter{corollaryCNT}%
+\textbf{系\thecorollaryCNT}\hskip1zw\KBop@name\par}
 {\end{Screen}}
 
 \newcounter{Exsamplecolcnt}
