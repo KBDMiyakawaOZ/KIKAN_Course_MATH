@@ -9,5 +9,7 @@
 *.gz
 *.bak
 texmf-local/
+testrun/
+CoreCourseMath2.cls
 !sample.tex
 !desc.tex
