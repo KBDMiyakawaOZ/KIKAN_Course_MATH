@@ -249,8 +249,8 @@
   }
 
   \def\ps@cust@empty@headings{\let\ps@jpl@in\ps@headnombre
-    \def\@oddfoot{\KBheaderfont\hfil\thepage\hfil}%
-    \def\@evenfoot{\KBpagenumfont\hfil\thepage\hfil}%
+    \def\@oddfoot{\KBheaderfont\hfil\thepage}%
+    \def\@evenfoot{\KBpagenumfont\thepage\hfil}%
     \let\@evenhead\relax%
     \let\@oddhead\relax%
     \let\@mkboth\markboth
@@ -449,16 +449,16 @@
 %\newtheorem{問}{問}[chapter]
 
 \newcounter{theoremCNT}[chapter]
-\renewcommand{\thetheoremCNT}{\thechapter--\arabic{theoremCNT}}
+\renewcommand{\thetheoremCNT}{\thechapter-\arabic{theoremCNT}}
 
 \newcounter{propCNT}[chapter]
-\renewcommand{\thepropCNT}{\thechapter--\arabic{propCNT}}
+\renewcommand{\thepropCNT}{\thechapter-\arabic{propCNT}}
 
 \newcounter{definitionCNT}[chapter]
-\renewcommand{\thedefinitionCNT}{\thechapter--\arabic{definitionCNT}}
+\renewcommand{\thedefinitionCNT}{\thechapter-\arabic{definitionCNT}}
 
 \newcounter{problemCNT}[chapter]
-\renewcommand{\theproblemCNT}{\thechapter--\arabic{problemCNT}}
+\renewcommand{\theproblemCNT}{\thechapter-\arabic{problemCNT}}
 
 %\setcounter{theoremCNT}{1}
 %\setcounter{definitionCNT}{1}
@@ -519,7 +519,7 @@
 
 
 \newcounter{Exsamplecolcnt}
-\def\theExsamplecolcnt{\thechapter --\@arabic\c@Exsamplecolcnt}
+\def\theExsamplecolcnt{\thechapter -\@arabic\c@Exsamplecolcnt}
 
 \newcommand{\QEDBox}{\mbox{\textcolor[gray]{.4}{■}}}
 \newenvironment{証明}{\topsep\baselineskip

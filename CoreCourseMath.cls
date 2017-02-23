@@ -3488,65 +3488,17 @@ kbenulbl:%
       \everypar{\everyparhook}%
     \fi\everyparhook}}
 
-% dvips用のsplecialの埋め込みです．(dviout, dvipdfmxでも有効です)
-% \@outputpapersettrueは用紙サイズをA4あるいはB4に限定して天地中央に(tombowが指定されて
-% いればトンボを含んだ状態で)配置させます．
-% jsbookでは\paperwidthと\paperheightを基準にしてsplecial用紙サイズを
-% 決定しています．
-% ここではプリンタ出力に便利なようにA4判を基準に算出させています．
-% クラスオプションpdfA4）でA4基準の仕様になり，
-% 指定しないと\paperwidthと\paperheightを基準にした
-% 用紙サイズに決定するようにしています．
-% (tombowありの判面＋トンボの用紙サイズになります．)
-% PDFやdvioutの画面上で余白に無駄なく表示させるには指定しないほうがスッキリします．
 
-\newif\if@Bsize@@@
-\@Bsize@@@false
-\if@outputpaperset
-\newdimen\Hof@@fset
-\newdimen\Vof@@fset
-  \setlength{\@tempdima}{\paperwidth}
-  \setlength{\@tempdimb}{\paperheight}
-% この分岐の方法再考
-    \ifdim \@tempdima<210mm
-      \setlength{\Hof@@fset}{210mm}
-      \setlength{\Vof@@fset}{297mm}
-    \else
-    \@Bsize@@@true
-      \setlength{\Hof@@fset}{257mm}
-      \setlength{\Vof@@fset}{364mm}
-    \fi
+\newdimen\stockwidth \newdimen\stockheight
+\setlength{\stockwidth}{\paperwidth}
+\setlength{\stockheight}{\paperheight}
   \iftombow
-   \advance \@tempdima 1in
-   \advance \@tempdimb 1in
-  \fi
-   \advance \Hof@@fset -\@tempdima
-   \advance \Vof@@fset -\@tempdimb
-   \divide \Hof@@fset 2
-   \divide \Vof@@fset 2
-  \iftombow
-   \advance \Hof@@fset -.5in
-   \advance \Vof@@fset -.5in
-  \fi
-\voffset\Vof@@fset
-\hoffset\Hof@@fset
-% この分岐の方法再考
-   \if@Bsize@@@
-     \AtBeginDvi{\special{papersize=257mm,364mm}}
-   \else
-     \AtBeginDvi{\special{papersize=210mm,297mm}}
-   \fi
-\else
-  \setlength{\@tempdima}{\paperwidth}
-  \setlength{\@tempdimb}{\paperheight}
-  \iftombow
-    \advance \@tempdima 1in
-    \advance \@tempdimb 1in
+    \advance \stockwidth 1in
+    \advance \stockheight 1in
     \voffset -.5in
     \hoffset -.5in
   \fi
-  \AtBeginDvi{\special{papersize=\the\@tempdima,\the\@tempdimb}}
-\fi
+\AtBeginDvi{\special{papersize=\the\stockwidth,\the\stockheight}}
 
 % 
 \let\@@PartFont\KBpartfont
@@ -3908,7 +3860,9 @@ kbenulbl:%
 \AtBeginDocument{%
 \@ifpackageloaded{lmodern}{%
 	\makeatletter
-	\input{lm.fdd}
+	\IfFileExists{lm.fdd}{\input{lm.fdd}}{%
+		\KB@class@warning{**** No file im.fdd ****}%
+		}%
 	\makeatother
 	\renewcommand{\sfdefault}{phv}
 	}{}%
