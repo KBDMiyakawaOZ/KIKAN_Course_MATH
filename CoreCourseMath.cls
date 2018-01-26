@@ -596,6 +596,30 @@
 	\kb@DeclarePaperFormats{a5}{148mm}{210mm}{35}{28}{24mm}{20mm}
 }
 
+
+\newif\if@TempGrid
+\@TempGridfalse
+\DeclareOption{tempgrid}{%
+	\kb@DeclareFontSizeBaseline{tiny}{7Q}{9H}
+	\kb@DeclareFontSizeBaseline{scriptsize}{10Q}{12H}
+	\kb@DeclareFontSizeBaseline{footnotesize}{11Q}{16H}
+	\kb@DeclareFontSizeBaseline{small}{12Q}{18H}
+	\kb@DeclareFontSizeBaseline{normalsize}{13Q}{24H}
+	\kb@DeclareFontSizeBaseline{large}{13pt}{24H}
+	\kb@DeclareFontSizeBaseline{Large}{14pt}{28H}
+	\kb@DeclareFontSizeBaseline{LARGE}{16Q}{24H}
+	\kb@DeclareFontSizeBaseline{huge}{20Q}{29H}
+	\kb@DeclareFontSizeBaseline{Huge}{25Q}{31H}
+	\kb@DeclareFontSizeBaseline{HUGE}{45Q}{61H}
+	\kb@DeclareFontSizeBaseline{tabfont}{12Q}{14H}
+%	\kb@DeclarePaperFormats{a5}{148mm}{210mm}{35}{32}{}{}
+%	\kb@DeclarePaperFormats{a5}{148mm}{210mm}{36}{30}{}{20mm}
+%	\kb@DeclarePaperFormats{a5}{148mm}{210mm}{36}{30}{}{}
+	\kb@DeclarePaperFormats{a5}{148mm}{210mm}{36}{31}{}{}
+	\@TempGridtrue
+}
+
+
 \DeclareOption{VUP}{%
 	\kb@DeclareFontSizeBaseline{tiny}{7Q}{9H}
 	\kb@DeclareFontSizeBaseline{scriptsize}{10Q}{12H}
@@ -1765,6 +1789,9 @@ Please do not specify the `uplatex' option, when you use pLaTeX^^J%
 \ifdim\ht\z@>\ht\tw@\@tempdima\ht\z@\else\@tempdima\ht\tw@\fi
 \headheight\@tempdima
 \headsep36H%
+\if@TempGrid
+\addtolength{\headsep}{-4mm}
+\fi
 % (たとえば\displatystyle\fracなど)ページの第一行目に背の高い文字が来ても行が出来るだけ下にずれないための処置です．そのままでは判面天地位置がおかしくなるので，\headsepで補正しつつ，\topmarginの算出方法を変えました．<- 試験的に設定しましたが，\sectionなどでも版面を天方向に飛び出してしまうので止めています．せっかくなのでクラスオプション[keepfline]で\@keepfline@@trueが有効になる設定は残しています．
 \if@keepfline@@
 	\setlength\topskip{\baselineskip}
@@ -2841,6 +2868,29 @@ kbenulbl:%
                {%
                \@dblfloat{figure}}
                {\end@dblfloat}
+%%% 2017/02/22 Variable fontsize in float
+
+\DeclareRobustCommand{\KB@tablefont}{\normalsize%
+  \dimen0=\f@size\p@
+  \dimen1=\baselineskip
+  \advance\dimen0 -1pt\relax
+  \advance\dimen1 -1pt\relax
+  \fontsize{\dimen0}{\dimen1}\selectfont
+}
+\DeclareRobustCommand{\KB@figurefont}{\normalsize%
+  \dimen0=\f@size\p@
+  \dimen1=\baselineskip
+  \advance\dimen0 -1pt\relax
+  \advance\dimen1 -1pt\relax
+  \fontsize{\dimen0}{\dimen1}\selectfont
+}
+\def \@floatboxreset {%
+        \reset@font
+        \normalsize
+        \csname KB@\@captype font\endcsname
+        \@setminipage
+}
+%%%%
 \newcounter{table}[chapter]
 \renewcommand{\thetable}{\thechapter.\@arabic\c@table}
 \def\fps@table{tbp}
@@ -3904,7 +3954,7 @@ When you'd like to use "otf package", I have to designate a "useotf" class optio
 OTF package has not been specified.^^J%
 ***********************************^^J%
 }\fi }
-\@ifpackageloaded{pxrubrica}{}{%
+\@ifpackageloaded{PXrubrica}{}{%
 \newskip\kb@rubysep
 \kb@rubysep\z@
 \newdimen\kb@tempdima
