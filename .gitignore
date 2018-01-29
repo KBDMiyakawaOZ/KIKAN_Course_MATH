@@ -8,6 +8,7 @@
 *.md
 *.gz
 *.bak
+*.txt
 texmf-local/
 testrun/
 CoreCourseMath2.cls
